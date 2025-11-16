@@ -1,122 +1,183 @@
-import React from "react";
-import { Layout } from "antd";
+import React, { useState, useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { UserOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { Layout, Menu, Drawer, Button, Space } from 'antd';
+import { UserOutlined, ShoppingCartOutlined, MenuOutlined } from "@ant-design/icons";
 
 const { Header, Footer, Content } = Layout;
 
-const headerStyle = {
-  textAlign: "center",
-  color: "black",
-  height: 64,
-  lineHeight: "64px",
-  backgroundColor: "white",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-evenly",
-  padding: "0 50px",
-};
+const MainLayout = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
-const contentStyle = {
-  textAlign: "center",
-  minHeight: "calc(100vh - 128px)",
-  padding: 24,
-  backgroundColor: "#0958d9",
-  color: "#fff",
-};
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 768);
+    }
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-const footerStyle = {
-  textAlign: "center",
-  color: "#fff",
-  backgroundColor: "#4096ff",
-};
-const tailwindHoverStyle =
-  "transition delay-150 duration-300 ease-in-out hover:scale-110";
+  // Menu principal (Navegação)
+  const mainMenuItems = [
+    {
+      key: '1',
+      label: <Link to="/">Home</Link>,
+    },
+    {
+      key: '2',
+      label: <Link to="/products">Produtos</Link>,
+    },
+    {
+      key: '3',
+      label: <Link to="/about">Sobre</Link>,
+    },
+  ];
 
-const layoutStyle = {
-  minHeight: "100vh",
-};
+  // Menu de usuário (Login e Carrinho)
+  const userMenuItems = [
+    {
+      key: 'login',
+      label: (
+        <Link to="/login">
+          <UserOutlined /> Login
+        </Link>
+      ),
+    },
+    {
+      key: 'cart',
+      label: (
+        <Link to="/cart">
+          <ShoppingCartOutlined /> Carrinho
+        </Link>
+      ),
+    },
+  ];
 
-const navStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: "20px",
-  height: "100%",
-};
+  // Menu mobile (combina tudo)
+  const mobileMenuItems = [
+    ...mainMenuItems,
+    { type: 'divider' }, // Linha separadora
+    ...userMenuItems,
+  ];
 
-const logoStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  fontWeight: "bold",
-  fontSize: "18px",
-  textDecoration: "none",
-  color: "black",
-  padding: "4px 8px",
-  borderRadius: "4px",
-};
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
+      <Header style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-evenly",
+        backgroundColor: "blue",
+        width: "100vw",
+        padding: "0 50px",
+        height: 64,
+      }}>
+        {/* Logo */}
+        <Link to="/" style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          fontWeight: "bold",
+          fontSize: "18px",
+          textDecoration: "none",
+          color: "black",
+        }}>
+          <img
+            src="../../public/logo.png"
+            alt="Logo"
+            style={{ height: "30px", width: "30px" }}
+          />
+          Green Line
+        </Link>
 
-const linkStyle = {
-  textDecoration: "none",
-  color: "black",
-  fontWeight: "900",
-  padding: "8px 12px",
-  borderRadius: "4px",
-  transition: "background-color 0.3s",
-};
+        {/* LAYOUT DESKTOP */}
+        {!isMobile && (
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            maxWidth: "800px",
+            margin: "0 auto",
+          }}>
+            {/* Menu Principal - CENTRO */}
+            <Menu
+              mode="horizontal"
+              items={mainMenuItems}
+              style={{
+                borderBottom: "none",
+                backgroundColor: "transparent",
+                flex: 1,
+                justifyContent: "center",
+                justifySelf: "center",
+              }}
+            />
 
-const MainLayout = () => (
-  <Layout style={layoutStyle}>
-    <Header style={headerStyle}>
-      {/* Logo à esquerda */}
-      <Link to="/index" style={logoStyle}>
-        {" "}
-        {/*Link serve como container clicável para redirecionar para a página inicial*/}
-        <img
-          src="../../public/logo.png"
-          alt="Logo"
-          style={{
-            height: "30px",
-            width: "30px",
-          }}
+            {/* Login e Carrinho - DIREITA */}
+            <Menu
+              mode="horizontal"
+              items={userMenuItems}
+              style={{
+                borderBottom: "1px solid #f0f0f0",
+                backgroundColor: "red",
+                width: "auto",
+                justifyContent: "flex-end",
+              }}
+            />
+          </div>
+        )}
+
+        {/* LAYOUT MOBILE */}
+        {isMobile && (
+          <Space>
+            {/* Ícone do Carrinho (sempre visível) */}
+            <Link to="/cart">
+              <Button type="text" icon={<ShoppingCartOutlined />} />
+            </Link>
+            
+            {/* Botão do Menu Hamburguer */}
+            <Button 
+              type="text" 
+              icon={<MenuOutlined />}
+              onClick={() => setDrawerVisible(true)}
+            />
+          </Space>
+        )}
+      </Header>
+
+      {/* DRAWER PARA MOBILE */}
+      <Drawer
+        title="Menu"
+        placement="right"
+        onClose={() => setDrawerVisible(false)}
+        open={drawerVisible}
+      >
+        <Menu
+          mode="vertical"
+          items={mobileMenuItems}
+          onClick={() => setDrawerVisible(false)} // Fecha drawer ao clicar
         />
-        Green Line
-      </Link>
+      </Drawer>
 
-      {/* Links de navegação à direita */}
-      <nav style={navStyle}>
-        <Link to="/index" style={linkStyle} className={tailwindHoverStyle}>
-          Index
-        </Link>
-        <Link to="/produtos" style={linkStyle} className={tailwindHoverStyle}>
-          Produtos
-        </Link>
-        <Link to="/sobre" style={linkStyle} className={tailwindHoverStyle}>
-          Sobre
-        </Link>
-        <Link to="/login" style={linkStyle} className={tailwindHoverStyle}>
-          Login
-        </Link>
-        <Link to="/cadastrar" style={linkStyle} className={tailwindHoverStyle}>
-          Cadastrar
-        </Link>
-      </nav>
-      <div className="flex">
-        <Link to="/login" style={logoStyle} className={tailwindHoverStyle}>
-          <UserOutlined />
-        </Link>
-        <Link to="carrinho" style={logoStyle} className={tailwindHoverStyle}>
-          <ShoppingCartOutlined />
-        </Link>
-      </div>
-    </Header>
+      <Content style={{
+        minHeight: "calc(100vh - 128px)",
+        padding: 24,
+        backgroundColor: "#0958d9",
+        color: "#fff",
+      }}>
+        <Outlet />
+      </Content>
 
-    <Content style={contentStyle}>
-      <Outlet />
-    </Content>
-
-    <Footer style={footerStyle}>Footer</Footer>
-  </Layout>
-);
+      <Footer style={{
+        textAlign: "center",
+        backgroundColor: "#4096ff",
+        color: "#fff",
+      }}>
+        Footer
+      </Footer>
+    </Layout>
+  );
+};
 
 export default MainLayout;
