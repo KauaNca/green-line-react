@@ -30,6 +30,8 @@ function Index() {
             </div>
           ))}
       </div>
+      <span>Categorias</span>
+      <div id="categorias-container"></div>
     </div>
   );
 }

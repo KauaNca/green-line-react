@@ -181,14 +181,44 @@ const MainLayout = () => {
         <Outlet />
       </Content>
 
-      <Footer
-        style={{
-          textAlign: "center",
-          backgroundColor: "#4096ff",
-          color: "#fff",
-        }}
-      >
-        Footer
+      <Footer className="bg-gray-800 py-8 px-4 text-white">
+        <div className="max-w-6xl mx-auto">
+          {/* Links de Navegação */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-6">
+            <Link
+              to="/privacy"
+              className="hover:text-green-400 transition-colors duration-200"
+            >
+              Política de Privacidade
+            </Link>
+            <Link
+              to="/terms"
+              className="hover:text-green-400 transition-colors duration-200"
+            >
+              Termos de Serviço
+            </Link>
+            <Link
+              to="/contact"
+              className="hover:text-green-400 transition-colors duration-200"
+            >
+              Contato
+            </Link>
+          </div>
+
+          {/* Separador */}
+          <div className="border-t border-gray-600 my-6 w-full max-w-xs mx-auto"></div>
+
+          {/* Informações da Empresa */}
+          <div className="text-center text-gray-300">
+            <p className="mb-2">
+              71080-020 | CNPJ: 74.707.730/0001-63 • Ceilândia, Brasília-DF
+            </p>
+            <p className="text-sm">
+              Green Line © {new Date().getFullYear()} • Created by Green Line
+              Team
+            </p>
+          </div>
+        </div>
       </Footer>
     </Layout>
   );
