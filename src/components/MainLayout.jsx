@@ -75,7 +75,6 @@ const MainLayout = () => {
           justifyContent: "space-between",
           backgroundColor: "white",
           color: "black",
-          width: "100vw",
           padding: "0 50px",
           height: 64,
         }}
@@ -176,6 +175,7 @@ const MainLayout = () => {
           padding: 24,
           backgroundColor: "#0958d9",
           color: "#fff",
+          border: "1px solid #ccc",
         }}
       >
         <Outlet />
